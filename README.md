@@ -195,7 +195,7 @@ Please refer to the API documentation for more details.
 
 ## License
 
-Copyright © 2021-Present Walmart
+Copyright © 2022-Present Howard Lewis Ship
 
 Distributed under the Apache License, Version 2.0.
 
