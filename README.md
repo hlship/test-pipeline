@@ -191,7 +191,7 @@ The library itself is quite small; here's the key functions and macros:
 - `halt` terminates pipeline execution
 - `halt-on-failure` terminate execution if any test failures occur
 
-Please refer to the API documentation for more details.
+Please refer to the [API documentation](https://hlship.github.io/docs/test-pipeline) for more details.
 
 ## License
 
