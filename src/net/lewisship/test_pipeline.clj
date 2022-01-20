@@ -22,8 +22,7 @@
   readable, and to make various kinds of steps more composable."
   (:require [com.walmartlabs.test-reporting :as test-reporting]
             [net.lewisship.test-pipeline.internal :as internal :refer [get-and-clear!]]
-            [clojure.tools.logging :refer [log*]]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :refer [log*] :as log]))
 
 (defn ^:private should-halt?
   [context]
