@@ -1,11 +1,12 @@
 {:paths ["src"]
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}
-        org.clojure/tools.logging {:mvn/version "1.1.0"}
+        org.clojure/tools.logging {:mvn/version "1.2.4"}
         com.walmartlabs/test-reporting {:mvn/version "1.1"}}
  :aliases
  ; clj -X:test
  {:test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner
-                      {:git/tag "v0.5.0" :git/sha "b3fd0d2"}}
+                      {:git/tag "v0.5.0" :git/sha "b3fd0d2"}
+                      io.aviso/logging {:mvn/version "1.0"}}
          :main-opts ["-m" "cognitect.test-runner"]
          :exec-fn cognitect.test-runner.api/test}}}
