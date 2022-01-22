@@ -18,6 +18,7 @@
             [com.walmartlabs.test-reporting :refer [reporting *reporting-context*]]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [clojure.tools.logging.test :refer [logged?]]
             [com.walmartlabs.test-reporting :as test-reporting])
   (:import (clojure.lang ExceptionInfo)))
 
@@ -180,31 +181,13 @@
     (mapv (juxt :logger :level :message :throwable))))
 
 (deftest logging-capture
-  (let [logger-name "pipeline-test"]
-    (p/execute
-      p/capture-logging
-      (fn [context]
-        (log/error "Inside step")
-        (log/error "Second log")
-        (is (= [[logger-name :error "Inside step" nil]
-                [logger-name :error "Second log" nil]]
-              (log-events context)))
-
-        ;; The above clears it
-
-        (is (= [] (log-events context)))
-
-        (let [t (RuntimeException.)]
-          (log/warn t "Fail")
-          (is (= [[logger-name :warn "Fail" t]]
-                (log-events context))))
-
-        (log/warn "Last")
-
-        (let [event (-> context p/log-events first)]
-          (is (some? event))
-          (is (= (-> (Thread/currentThread) .getName))
-            (:thread-name event)))))))
+  (p/execute
+    p/capture-logging
+    (fn [_]
+      (log/error "Inside step")
+      (log/error "Second log")
+      (is (logged? 'pipeline-test :error "Inside step"))
+      (is (logged? 'pipeline-test :error "Second log")))))
 
 (deftest halt-bypasses-last-step-check
   (p/execute

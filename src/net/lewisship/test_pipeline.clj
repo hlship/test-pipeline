@@ -21,8 +21,8 @@
   The goal is to make tests flatter (fewer nested scopes), more
   readable, and to make various kinds of steps more composable."
   (:require [com.walmartlabs.test-reporting :as test-reporting]
-            [net.lewisship.test-pipeline.internal :as internal :refer [get-and-clear!]]
-            [clojure.tools.logging :refer [log*] :as log])
+            [net.lewisship.test-pipeline.internal :refer [get-and-clear!]]
+            [clojure.tools.logging.test :refer [with-log]])
   (:refer-clojure :exclude [binding]))
 
 (defn ^:private should-halt?
@@ -181,7 +181,7 @@
        (continue context#))))
 
 (defmacro redef
-  "Evalutes to a step function that redefines the variable to a new value before continuing."
+  "Evaluates to a step function that redefines the variable to a new value before continuing."
   [redef-var override-value]
   {:added "0.2"}
   `(fn [context#]
@@ -202,30 +202,9 @@
 
 (defn capture-logging
   "A step function that captures logging events from `clojure.tools.logging`.
-
-  Replaces the `*logger-factory*` with one that enables logging
-  for all loggers and levels, and captures all log events to an atom.
-  These events can be accessed via [[log-events]].
-
-  Each captured logging event is a map with the following keys:
-
-  - :thread-name - String name of current thread
-  - :logger - String name of logger, e.g., \"com.example.myapp.worker\"
-  - :level - keyword of log level (:debug, :error, etc.)
-  - :throwable - instance of Throwable, or nil
-  - :message - String message
-
-  Note that only logging events from `clojure.tools.logging` are captured; logging to other frameworks
-  (such logging from referenced Java libraries) are logged normally and not captured."
+  Use the `clojure.tools.logging.test` namespace to query what has been logged."
   [context]
-  (let [*log-events (atom [])
-        factory (internal/capture-logger-factory *log-events)]
-    (with-redefs [log/*logger-factory* factory]
-      (continue (assoc context ::*log-events *log-events)))))
-
-(defn log-events
-  "Returns all captured logging events, while clearing the list as a side effect."
-  [context]
-  (-> context ::*log-events get-and-clear!))
+  (with-log
+    (continue context)))
 
 

@@ -12,8 +12,7 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 
-(ns ^:no-doc net.lewisship.test-pipeline.internal
-  (:require [clojure.tools.logging.impl :as impl]))
+(ns ^:no-doc net.lewisship.test-pipeline.internal)
 
 (defn get-and-clear!
   "Gets the value of an atom, then resets it to the empty list."
@@ -23,40 +22,4 @@
       (if (compare-and-set! *atom result [])
         result
         (recur)))))
-
-(defrecord CaptureLogger [logger-name *log-events]
-
-  impl/Logger
-
-  (enabled? [_ _] true)
-
-  (write! [_ level throwable message]
-    (let [event {:thread-name (-> (Thread/currentThread) .getName)
-                 :logger logger-name
-                 :level level
-                 :throwable throwable
-                 :message message}]
-      (swap! *log-events conj event))
-    nil))
-
-(defrecord CaptureLoggerFactory [*log-events *loggers]
-
-  impl/LoggerFactory
-  (name [_] "com.walmartlabs/test-fixtures capture")
-
-  (get-logger [_ logger-ns]
-    (loop []
-      (let [loggers @*loggers
-            logger (get loggers logger-ns)]
-        (or logger
-          (let [new-logger (->CaptureLogger (str logger-ns) *log-events)
-                loggers' (assoc loggers logger-ns new-logger)]
-            (if (compare-and-set! *loggers loggers loggers')
-              new-logger
-              (recur))))))))
-
-
-(defn capture-logger-factory
-  [*log-events]
-  (->CaptureLoggerFactory *log-events (atom {})))
 

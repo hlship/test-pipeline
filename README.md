@@ -195,7 +195,7 @@ The library itself is quite small; here's the key functions and macros:
 - `spy` is used to capture arguments passed to a function, and optionally mock it at the same time
 - `calls` is used to obtain the captured arguments to a spied function
 - `update-in-context` and `assoc-in-context` are used to modify the context during execution
-- `capture-logging` captures log events so that `log-events` can return them
+- `capture-logging` captures log events; a wrapper around `clojure.tools.logging.test/with-log`
 - `halt` terminates pipeline execution
 - `halt-on-failure` terminates execution if any test failures occur
 
