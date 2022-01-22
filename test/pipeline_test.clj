@@ -235,3 +235,13 @@
         #(-> %
              (dissoc :fail :error)
              (merge counters))))))
+
+(def ^:dynamic *bound-var* :default)
+
+(deftest pipeline-binding
+  (let [*value (atom nil)]
+    (p/execute
+      (p/binding *bound-var* :override)
+      (fn [_]
+        (reset! *value *bound-var*)))
+    (is (= :override @*value))))

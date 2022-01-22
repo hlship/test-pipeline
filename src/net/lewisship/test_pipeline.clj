@@ -22,7 +22,8 @@
   readable, and to make various kinds of steps more composable."
   (:require [com.walmartlabs.test-reporting :as test-reporting]
             [net.lewisship.test-pipeline.internal :as internal :refer [get-and-clear!]]
-            [clojure.tools.logging :refer [log*] :as log]))
+            [clojure.tools.logging :refer [log*] :as log])
+  (:refer-clojure :exclude [binding]))
 
 (defn ^:private should-halt?
   [context]
@@ -170,6 +171,14 @@
   (assert (keyword? k))
   `(fn [context#]
      (test-reporting/reporting {'~(-> k name symbol) (get context# ~k)}
+       (continue context#))))
+
+(defmacro binding
+  "Evaluates to a step function that binds the variable to a value before continuing."
+  {:added "0.2"}
+  [bind-var bound-value]
+  `(fn [context#]
+     (clojure.core/binding [~bind-var ~bound-value]
        (continue context#))))
 
 (defn split
