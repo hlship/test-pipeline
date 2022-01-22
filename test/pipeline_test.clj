@@ -245,3 +245,17 @@
       (fn [_]
         (reset! *value *bound-var*)))
     (is (= :override @*value))))
+
+(defn redef-target
+  [x]
+  (inc x))
+
+(deftest pipeline-redef
+  (is (= 4 (redef-target 3)))
+  (let [*value (atom nil)]
+    (p/execute
+      (p/redef redef-target #(* 2 %))
+      (fn [_]
+        (reset! *value (redef-target 10))))
+    (is (= 20 @*value)))
+  (is (= 100 (redef-target 99))))

@@ -181,6 +181,14 @@
      (clojure.core/binding [~bind-var ~bound-value]
        (continue context#))))
 
+(defmacro redef
+  "Evalutes to a step function that redefines the variable to a new value before continuing."
+  [redef-var override-value]
+  {:added "0.2"}
+  `(fn [context#]
+     (with-redefs [~redef-var ~override-value]
+       (continue context#))))
+
 (defn split
   "Splits the execution pipeline.  Returns a step function that will sequence through
   the provided seq of step fns and pass the context to each in turn.
