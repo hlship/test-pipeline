@@ -1,5 +1,7 @@
 # io.github.hlship/test-pipeline
 
+[![Clojars Project](https://img.shields.io/clojars/v/io.github.hlship/test-pipeline.svg)](https://clojars.org/io.github.hlship/test-pipeline)
+
 [API Documentation](https://hlship.github.io/docs/test-pipeline/)
 
 `test-pipeline` is a small (very small!) library that can be used to improve your Clojure test suite.
@@ -121,6 +123,10 @@ the response as context key :response.  `expect-success` asserts that the respon
 is status 200 and no GraphQL errors are present.  `expect-data` asserts that the :data key
 of the body matches the provided value.
 
+What we've done is establish a _convention_ for how test data is stored into the context, so
+that individual steps can read or update that data; thus `expect-success` knows that a prior step
+has recorded a :response key into the context, and `expect-data` can use that same :response key.
+
 ## Creating Steps
 
 Each step function takes a `context` map as its only parameter, and then
@@ -130,7 +136,7 @@ or redefine a function with a mock, make an assertion with `clojure.test/is`, or
 
 For example, the `start-system` step from the above example is coded as:
  
-```
+```clojure
 (defn start-system
   [context]
   (let [system (-> context :system component/start-system)]
@@ -149,7 +155,7 @@ Often, a step requires data specific to a particular test; in that case, a step 
 step function that is passed to `p/execute`.
 For example, the `expect-data` function isn't a step itself; it is a factory that returns a step function:
 
-```
+```clojure
 (defn expect-data
    [data]
    (fn [context]
@@ -167,8 +173,8 @@ implementation.
 
 ## Halting
 
-The pipeline execution can be teminated with `halt`; this bypasses the above 
-check that the final step is executed.
+The pipeline execution can be teminated with `halt`; `halt` exists to avoid the above check that all
+steps executed.
 
 This is useful when an early failure (say, an incorrect HTTP response from a server)
 will lead to a crowd of meaningless failures further on (such as validating
@@ -176,6 +182,8 @@ the HTTP response).
 
 The function `halt-on-failure` is often more useful, it ensures that after
 any step where test failures or errors occur, the pipeline execution is terminated.
+Typically, this is often used when initially developing the code and tests, but can
+be discarded once everything is stable.
 
 ## What's in the box?
 
@@ -189,7 +197,7 @@ The library itself is quite small; here's the key functions and macros:
 - `update-in-context` and `assoc-in-context` are used to modify the context during execution
 - `capture-logging` captures log events so that `log-events` can return them
 - `halt` terminates pipeline execution
-- `halt-on-failure` terminate execution if any test failures occur
+- `halt-on-failure` terminates execution if any test failures occur
 
 Please refer to the [API documentation](https://hlship.github.io/docs/test-pipeline) for more details.
 
