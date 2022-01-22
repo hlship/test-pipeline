@@ -73,6 +73,9 @@
 (defn execute
   "The main entrypoint: executes a sequence of step functions as a pipeline.
 
+   Each step in `steps` may be a step function, or nil, or a seq of steps (recursively).
+   The provided seq is flattened and nils are removed before constructing the final pipeline.
+
    A step function is responsible for one portion of setting up the test environment, and may perform part of the
    test execution as well. Generally, the final step function is the most specific to a particular test,
    and will be where most assertions occur.
@@ -81,20 +84,16 @@
    passing the context to `continue`; this call is often wrapped
    in a `try` (to clean up resources) and/or `with-redefs` (to override functions for testing).
 
-   Note that nils are allowed as no-op steps to make it easier to conditionally include
-   steps using `when`.  The provided seq of step functions is flattened and nils are removed
-   before constructing the final pipeline.
-
    Each step function must call [[continue]] (except the final step function,
    for which the call to `continue` is optional and does nothing); however this check is skipped if
    the execution pipeline is halted."
-  [& step-fns]
-  (assert (seq step-fns))
+  [& steps]
+  (assert (seq steps))
   (let [*executed (atom false)
         *halted (atom false)
-        step-fns (->> step-fns flatten (remove nil?))
+        step-fns (->> steps flatten (remove nil?))
         ;; Want to add a hook before calling the final step fn to ensure it actually gets
-        ;; invoked.
+        ;; invoked (that all prior steps called continue).
         tail-fn (last step-fns)
         check-fn (fn [context]
                    (reset! *executed true)
