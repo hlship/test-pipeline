@@ -130,7 +130,7 @@ has recorded a :response key into the context, and `expect-data` can use that sa
 ## Creating Steps
 
 Each step function takes a `context` map as its only parameter, and then
-invokes `com.walmartlabs.test-pipeline/continue` to continue to the next step.
+invokes `p/continue` to continue to the next step.
 Obviously, a real step function will do something useful first, such as override a component in a component system,
 or redefine a function with a mock, make an assertion with `clojure.test/is`, or anything else that's needed.
 
