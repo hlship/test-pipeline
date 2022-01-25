@@ -2,10 +2,11 @@
   (:require [clojure.tools.build.api :as b]))
 
 (def lib 'io.github.hlship/test-pipeline)
-(def version "v0.1")
+(def version "v0.2")
 
 (def jar-params {:project-name lib
-                 :version version})
+                 :version version
+                 :url "https://github.com/hlship/test-pipeline"})
 
 (defn clean
       [_params]

@@ -174,12 +174,6 @@
              :bar {:baz 3}}
            (select-keys % [:foo :bar])))))
 
-(defn ^:private log-events
-  [context]
-  (->> context
-    p/log-events
-    (mapv (juxt :logger :level :message :throwable))))
-
 (deftest logging-capture
   (p/execute
     p/capture-logging
@@ -224,7 +218,7 @@
 (deftest pipeline-binding
   (let [*value (atom nil)]
     (p/execute
-      (p/binding *bound-var* :override)
+      (p/bind *bound-var* :override)
       (fn [_]
         (reset! *value *bound-var*)))
     (is (= :override @*value))))

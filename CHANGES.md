@@ -1,6 +1,6 @@
-# v0.2 -- UNRELEASED
+# v0.2 -- 25 Jan 2022
 
-Added the `binding` and `redef` step function factories.
+Added the `bind` and `redef` step function factories.
 
 Change `capture-logging` to simply invoke `clojure.tools.logging.test/with-log`; removed `log-events`.
 
