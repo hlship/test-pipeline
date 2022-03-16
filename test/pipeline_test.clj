@@ -130,8 +130,18 @@
                :row-data]]
             (p/calls context put-row))))))
 
+(defn ^:private roll-back-test-failure-counters
+  [counters]
+  (dosync
+    (commute clojure.test/*report-counters*
+             #(-> %
+                  (dissoc :fail :error)
+                  (merge counters)))))
+
 (deftest reporting-macro
-  (p/execute
+  (let [counters (test-reporting/snapshot-counters)]
+    (p/execute
+    p/halt-on-failure
     (fn [context]
                (p/continue (assoc context :some-data 42
                                           :other-data 99
@@ -139,9 +149,12 @@
     (p/reporting :some-data)
     (p/reporting :other-data)
     (fn [_]
+      (is (= :truth :beauty)
+          "forced exception to exercise reporting")
       (is (= '{some-data 42
                other-data 99}
-            *reporting-context*)))))
+            *reporting-context*))))
+    (roll-back-test-failure-counters counters)))
 
 (deftest split
   (let [*contexts (atom [])
@@ -205,13 +218,7 @@
       ;; Because of halt-on-failure, this is never reached
       (fn [_]
         (throw (IllegalStateException. "should have halted"))))
-
-    ;; Back out the induced failure
-    (dosync
-      (commute clojure.test/*report-counters*
-        #(-> %
-             (dissoc :fail :error)
-             (merge counters))))))
+    (roll-back-test-failure-counters counters)))
 
 (def ^:dynamic *bound-var* :default)
 

@@ -1,3 +1,7 @@
+# v0.3 -- 16 Mar 2022
+
+Converted to .cljc for use in testing ClojureScript applications.
+
 # v0.2 -- 25 Jan 2022
 
 Added the `bind` and `redef` step function factories.

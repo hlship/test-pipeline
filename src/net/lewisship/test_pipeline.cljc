@@ -22,7 +22,8 @@
   readable, and to make various kinds of steps more composable."
   (:require [com.walmartlabs.test-reporting :as test-reporting]
             [net.lewisship.test-pipeline.internal :refer [get-and-clear!]]
-            [clojure.tools.logging.test :refer [with-log]]))
+            #?(:clj [clojure.tools.logging.test :refer [with-log]]))
+  #?(:cljs (:require-macros net.lewisship.test-pipeline)))
 
 (defn ^:private should-halt?
   [context]
@@ -103,7 +104,7 @@
                ::halt-checks []})
     (when-not @*halted
       (assert @*executed
-        "no exception was thrown, but not all steps executed"))
+              "no exception was thrown, but not all steps executed"))
     nil))
 
 ;; Common steps
@@ -158,8 +159,8 @@
   (assert (symbol? spy-var))
   `(let [spys# (get ~context ::spys)
          *atom# (or (get spys# #'~spy-var)
-                  (throw (ex-info (str "no spy for " #'~spy-var)
-                           {:spies (->> spys# keys (sort-by str))})))]
+                    (throw (ex-info (str "no spy for " #'~spy-var)
+                                    {:spies (->> spys# keys (sort-by str))})))]
      (get-and-clear! *atom#)))
 
 (defmacro reporting
@@ -199,11 +200,14 @@
     (doseq [f step-fns]
       (f context))))
 
-(defn capture-logging
-  "A step function that captures logging events from `clojure.tools.logging`.
-  Use the `clojure.tools.logging.test` namespace to query what has been logged."
-  [context]
-  (with-log
-    (continue context)))
+;; capture-logging only makes sense for Clojure as clojure.tools.logging is not implemented for ClojureScript.
+
+#?(:clj
+   (defn capture-logging
+     "A step function that captures logging events from `clojure.tools.logging`.
+     Use the `clojure.tools.logging.test` namespace to query what has been logged."
+     [context]
+     (with-log
+       (continue context))))
 
 

@@ -4,7 +4,8 @@
 
 [API Documentation](https://hlship.github.io/docs/test-pipeline/)
 
-`test-pipeline` is a small (very small!) library that can be used to improve your Clojure test suite.
+`test-pipeline` is a small (very small!) library that can be used to improve your Clojure (or ClojureScript) 
+test suite.
 
 The central idea is that tests can be implemented as a series of reusable, composable, cooperating _steps_.
  
