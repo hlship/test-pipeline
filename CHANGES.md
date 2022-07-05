@@ -1,12 +1,13 @@
 # v0.3 -- 16 Mar 2022
 
 Converted to .cljc for use in testing ClojureScript applications.
+Removed `redef` as it was identical to the older `mock`.
 
 # v0.2 -- 25 Jan 2022
 
 Added the `bind` and `redef` step function factories.
 
-Change `capture-logging` to simply invoke `clojure.tools.logging.test/with-log`; removed `log-events`.
+Changed `capture-logging` to simply invoke `clojure.tools.logging.test/with-log`; removed `log-events`.
 
 [Closed Issues](https://github.com/hlship/test-pipeline/milestone/1?closed=1)
 

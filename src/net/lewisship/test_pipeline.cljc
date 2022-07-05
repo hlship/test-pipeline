@@ -122,7 +122,7 @@
     (continue (assoc-in context ks v))))
 
 (defmacro mock
-  "Expands to a step function that mocks the var with the corresponding function
+  "Expands to a step function that mocks the var with the corresponding value
   (as with `clojure.core/with-redefs`)."
   [mock-var mock-fn]
   `(fn [context#]
@@ -178,14 +178,6 @@
   [bind-var bound-value]
   `(fn [context#]
      (binding [~bind-var ~bound-value]
-       (continue context#))))
-
-(defmacro redef
-  "Evaluates to a step function that redefines the variable to a new value before continuing."
-  [redef-var override-value]
-  {:added "0.2"}
-  `(fn [context#]
-     (with-redefs [~redef-var ~override-value]
        (continue context#))))
 
 (defn split
