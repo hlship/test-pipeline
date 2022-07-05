@@ -1,7 +1,10 @@
+# v0.4 -- 5 Jul 2022
+
+Removed `redef` as it was identical to the older `mock`.
+
 # v0.3 -- 16 Mar 2022
 
 Converted to .cljc for use in testing ClojureScript applications.
-Removed `redef` as it was identical to the older `mock`.
 
 # v0.2 -- 25 Jan 2022
 

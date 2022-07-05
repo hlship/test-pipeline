@@ -3,7 +3,7 @@
             [net.lewisship.build :refer [requiring-invoke]]))
 
 (def lib 'io.github.hlship/test-pipeline)
-(def version "v0.3")
+(def version "v0.4")
 
 (def jar-params {:project-name lib
                  :version version
