@@ -215,8 +215,10 @@
 (defmacro is
   "Wrapper around clojure.test/is."
   {:added "0.5"}
-  [expr]
-  `(then (clojure.test/is ~expr)))
+  ([expr]
+   `(then (clojure.test/is ~expr)))
+  ([expr message]
+   `(then (clojure.test/is ~expr ~message))))
 
 (defmacro testing
   "Wrapper around clojure.test/testing."

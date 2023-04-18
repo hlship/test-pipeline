@@ -1,3 +1,7 @@
+# 0.5.1 -- 18 Apr 2023
+
+Added two-arity version of `is` to match two-arity `clojure.test/is`.
+
 # 0.5 -- 17 Apr 2023
 
 Added `then`, `is`, and `testing`.
