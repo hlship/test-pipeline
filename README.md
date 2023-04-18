@@ -152,16 +152,16 @@ This is a function that accepts a context, operates on it, and passes it to the
 that).  The `try` ensures that the system is stopped, regardless of what happens 
 in later steps. 
 
-Often, a step requires data specific to a particular test; in that case, a step function factory can create a
+Often, a step requires data specific to a particular test; in that case, a step function builder can create a
 step function that is passed to `p/execute`.
-For example, the `expect-data` function isn't a step itself; it is a factory that returns a step function:
+For example, the `expect-data` function isn't a step itself; it is a builder that returns a step function:
 
 ```clojure
 (defn expect-data
    [data]
    (fn [context]
      (is (= data (get-in context [:response :body :data])))
-     (p/continue context))
+     (p/continue context)))
 ```
 
 Although the step function returned by `expect-data` is typically the final step in the pipeline, it should still
@@ -171,6 +171,40 @@ response, but then have further steps to make other assertions, such as checking
 The `execute` function will throw an exception if the final step function never gets invoked (due
 to a prior step not calling `continue`), as this is almost certainly a bug in the step function
 implementation.
+
+## then
+
+The `then` macro is a step builder taht evaluates to a step function that itself
+evaluates some expressions before continuing; 
+this is handy for performing some assertions when the context is not directly needed, or triggering some
+code for side-effects.
+
+```clojure
+   ...
+   (p/then (is (= 42 (calculate-final-answer))))
+```
+
+## is
+
+The above example has its own special case and can be rewritten as:
+
+```clojure
+   ...
+   (p/is (= 42 (calculate-final-answer)))
+```
+
+## testing
+
+A final `clojure.test` helper is `testing`, which is just a wrapper around `clojure.test/testing`.
+
+```clojure
+   ...
+   (p/testing "Deep Thought")
+   (p/is (= 42 (calculate-final-answer)))
+```
+
+"Deep Thought" will be the inner-most test context (in `clojure.test/*testing-contexts*`) when checking the
+result of `calculate-final-answer`.
 
 ## Halting
 
@@ -199,6 +233,8 @@ The library itself is quite small; here's the key functions and macros:
 - `capture-logging` captures log events; a wrapper around `clojure.tools.logging.test/with-log`
 - `halt` terminates pipeline execution
 - `halt-on-failure` terminates execution if any test failures occur
+- `then` evaluate expressions during execution
+- `is`, `testing` wrappers around clojure.test
 
 Please refer to the [API documentation](https://hlship.github.io/docs/test-pipeline) for more details.
 

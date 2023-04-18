@@ -229,3 +229,23 @@
       (fn [_]
         (reset! *value *bound-var*)))
     (is (= :override @*value))))
+
+(deftest then-test
+  (let [*invoked (atom [false false false])]
+    (p/execute
+      (p/then
+        (swap! *invoked assoc 0 true)
+        ;; Yes, then will evaluate multiple exprs
+        (swap! *invoked assoc 1 true))
+      ;; Yes, then continues to next check fn
+      (p/then
+        (swap! *invoked assoc 2 true)))
+
+    (is (= [true true true] @*invoked))))
+
+(deftest testing-test
+  (p/execute
+    (p/testing "outer context")
+    (p/testing "inner context")
+    ;; Some faith here that p/is works, but I saw it fail earlier when it should have.
+    (p/is (= ["inner context" "outer context"] clojure.test/*testing-contexts*))))

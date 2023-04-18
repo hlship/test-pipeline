@@ -1,3 +1,7 @@
+# 0.5 -- 17 Apr 2023
+
+Added `then`, `is`, and `testing`.
+
 # v0.4 -- 5 Jul 2022
 
 Removed `redef` as it was identical to the older `mock`.

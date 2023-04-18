@@ -1,13 +1,12 @@
 (ns build
   (:require [clojure.tools.build.api :as b]
-            [net.lewisship.build :refer [requiring-invoke]]))
+            [net.lewisship.build :refer [requiring-invoke] :as nb]))
 
 (def lib 'io.github.hlship/test-pipeline)
-(def version "v0.4")
+(def version "0.5")
 
-(def jar-params {:project-name lib
-                 :version version
-                 :url "https://github.com/hlship/test-pipeline"})
+(def options {:project-name lib
+              :version version})
 
 (defn clean
   [_params]
@@ -15,16 +14,14 @@
 
 (defn jar
   [_params]
-  (requiring-invoke net.lewisship.build.jar/create-jar jar-params))
+  (nb/create-jar options))
 
 (defn deploy
   [_params]
   (clean nil)
   (jar nil)
-  (requiring-invoke net.lewisship.build.jar/deploy-jar jar-params))
+  (nb/deploy-jar (nb/create-jar options)))
 
 (defn codox
   [_params]
-  (requiring-invoke net.lewisship.build.codox/generate
-                    {:project-name lib
-                     :version version}))
+  (nb/generate-codox options))

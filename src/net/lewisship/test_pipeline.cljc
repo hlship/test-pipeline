@@ -21,6 +21,7 @@
   The goal is to make tests flatter (fewer nested scopes), more
   readable, and to make various kinds of steps more composable."
   (:require [com.walmartlabs.test-reporting :as test-reporting]
+            clojure.test
             [net.lewisship.test-pipeline.internal :refer [get-and-clear!]]
             #?(:clj [clojure.tools.logging.test :refer [with-log]]))
   #?(:cljs (:require-macros net.lewisship.test-pipeline)))
@@ -203,3 +204,24 @@
        (continue context))))
 
 
+(defmacro then
+  "Evaluates the provided expressions before continuing."
+  {:added "0.5"}
+  [& exprs]
+  `(fn [context#]
+     ~@exprs
+     (continue context#)))
+
+(defmacro is
+  "Wrapper around clojure.test/is."
+  [expr]
+  {:added "0.5"}
+  `(then (clojure.test/is ~expr)))
+
+(defmacro testing
+  "Wrapper around clojure.test/testing."
+  [expr]
+  {:added "0.5"}
+  `(fn [context#]
+     (clojure.test/testing ~expr
+       (continue context#))))
