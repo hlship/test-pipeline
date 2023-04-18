@@ -1,8 +1,8 @@
 # io.github.hlship/test-pipeline
 
 [![Clojars Project](https://img.shields.io/clojars/v/io.github.hlship/test-pipeline.svg)](https://clojars.org/io.github.hlship/test-pipeline)
-
-[API Documentation](https://hlship.github.io/docs/test-pipeline/)
+[![CI](https://github.com/hlship/test-pipeline/actions/workflows/config.yml/badge.svg)](https://github.com/hlship/test-pipeline/actions/workflows/config.yml)
+[![API Documentation](https://img.shields.io/badge/API-Documentation-blue)](https://hlship.github.io/docs/test-pipeline)
 
 `test-pipeline` is a small (very small!) library that can be used to improve your Clojure (or ClojureScript) 
 test suite.
@@ -235,6 +235,7 @@ The library itself is quite small; here's the key functions and macros:
 - `halt-on-failure` terminates execution if any test failures occur
 - `then` evaluate expressions during execution
 - `is`, `testing` wrappers around clojure.test
+- `cleanup`  expressions execute after pipeline execution completes
 
 Please refer to the [API documentation](https://hlship.github.io/docs/test-pipeline) for more details.
 

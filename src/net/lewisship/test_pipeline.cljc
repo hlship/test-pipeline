@@ -227,3 +227,13 @@
   `(fn [context#]
      (clojure.test/testing ~expr
        (continue context#))))
+
+(defmacro cleanup
+  "Creates a try/finally to execute the provided cleanup expressions after the pipeline has finished executing."
+  {:added "0.6"}
+  [& exprs]
+  `(fn [context#]
+     (try
+       (continue context#)
+       (finally
+         (do ~@exprs)))))

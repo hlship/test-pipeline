@@ -1,3 +1,7 @@
+# 0.6 -- UNRELEASED
+
+Added `cleanup`.
+
 # 0.5.1 -- 18 Apr 2023
 
 Added two-arity version of `is` to match two-arity `clojure.test/is`.

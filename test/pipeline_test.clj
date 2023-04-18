@@ -249,3 +249,15 @@
     (p/testing "inner context")
     ;; Some faith here that p/is works, but I saw it fail earlier when it should have.
     (p/is (= ["inner context" "outer context"] clojure.test/*testing-contexts*))))
+
+(deftest cleanup
+  (let [*invoked (atom false)
+        e        (RuntimeException. "from then")
+        thrown-e (is (thrown? RuntimeException
+                       (p/execute
+                         (p/cleanup
+                           (reset! *invoked true))
+                         (p/is (= false @*invoked))
+                         (p/then (throw e)))))]
+    (is (= e thrown-e))
+    (is (= true @*invoked))))
