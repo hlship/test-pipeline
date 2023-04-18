@@ -174,10 +174,10 @@ implementation.
 
 ## then
 
-The `then` macro is a step builder taht evaluates to a step function that itself
+The `then` macro is a step builder that evaluates to a step function that itself
 evaluates some expressions before continuing; 
 this is handy for performing some assertions when the context is not directly needed, or triggering some
-code for side-effects.
+code for side effects.
 
 ```clojure
    ...
