@@ -103,12 +103,11 @@ is less busy, less deeply nested, and easier to read and maintain:
                    {:status "SUCCESS"
                     :statusText "Canceled"
                     :statusSubText "You canceled this item on Aug 24"
-                    :omsCode nil}}}))
+                    :omsCode nil}}})))
 ```
 
 This style of test reads more like a recipe, with more clearly deliniated steps
 that all work together to accomplish the final result.
-
 
 Again, most of these functions are specific to our application.  `default-system`
 is a step function that initializes the base Component system map and places it in
@@ -144,7 +143,7 @@ For example, the `start-system` step from the above example is coded as:
      (try
        (p/continue (assoc context :system system)
        (finally
-         (component/stop-system system)))))
+         (component/stop-system system))))))
 ```
 
 This is a function that accepts a context, operates on it, and passes it to the
@@ -203,12 +202,12 @@ A final `clojure.test` helper is `testing`, which is just a wrapper around `cloj
    (p/is (= 42 (calculate-final-answer)))
 ```
 
-"Deep Thought" will be the inner-most test context (in `clojure.test/*testing-contexts*`) when checking the
+"Deep Thought" will be the innermost test context (in `clojure.test/*testing-contexts*`) when checking the
 result of `calculate-final-answer`.
 
 ## Halting
 
-The pipeline execution can be teminated with `halt`; `halt` exists to avoid the above check that all
+The pipeline execution can be terminated with `halt`; `halt` exists to avoid the above check that all
 steps executed.
 
 This is useful when an early failure (say, an incorrect HTTP response from a server)
@@ -236,6 +235,7 @@ The library itself is quite small; here's the key functions and macros:
 - `then` evaluate expressions during execution
 - `is`, `testing` wrappers around clojure.test
 - `cleanup`  expressions execute after pipeline execution completes
+- `providing`, `validating` provide more powerful mocking capabilities, care of [nubank/mockfn](https://github.com/nubank/mockfn)
 
 Please refer to the [API documentation](https://hlship.github.io/docs/test-pipeline) for more details.
 

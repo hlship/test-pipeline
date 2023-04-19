@@ -22,6 +22,7 @@
   readable, and to make various kinds of steps more composable."
   (:require [com.walmartlabs.test-reporting :as test-reporting]
             clojure.test
+            [mockfn.macros :as mfn]
             [net.lewisship.test-pipeline.internal :refer [get-and-clear!]]
             #?(:clj [clojure.tools.logging.test :refer [with-log]]))
   #?(:cljs (:require-macros net.lewisship.test-pipeline)))
@@ -239,3 +240,26 @@
        (continue context#)
        (finally
          (do ~@exprs)))))
+
+(defmacro providing
+  "Wrapper around mockfn.macros/providing.  The argument is the bindings vector."
+  {:added "0.6"}
+  [bindings]
+  {:pre [(vector? bindings)
+         (= 0 (mod (count bindings) 2))]}
+  `(fn [context#]
+     (mfn/providing ~bindings
+       (continue context#))))
+
+
+(defmacro verifying
+  "Wrapper around mockfn.macros/verifying.  The argument is the bindings vector."
+  {:added "0.6"}
+  [bindings]
+  {:pre [(vector? bindings)
+         (= 0 (mod (count bindings) 3))]}
+  `(fn [context#]
+     (mfn/verifying ~bindings
+       (continue context#))))
+
+
