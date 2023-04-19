@@ -133,7 +133,7 @@
 (defmacro spy
   "Expands to a step function that mocks a function with a spy.
 
-  The spy records into an atom each set of arguments it is passed, before passing the arguments to the spied function.
+  The spy records into an atom each list of arguments it is passed, before passing the arguments to the spied function.
 
   Optionally, a mock function (as with [[mock]]) can be supplied to replace the spied function.
 
@@ -155,12 +155,14 @@
           (continue (assoc-in context# [::spys #'~spy-var] *atom#)))))))
 
 (defmacro calls
-  "Returns calls to-date of the given spy, clearing the list of calls as a side effect."
+  "Returns calls to-date of the given spy, clearing the list of calls as a side effect.
+
+  Returns a vector of lists of arguments."
   [context spy-var]
   (assert (symbol? spy-var))
   `(let [spys# (get ~context ::spys)
          *atom# (or (get spys# #'~spy-var)
-                    (throw (ex-info (str "no spy for " #'~spy-var)
+                    (throw (ex-info ~(str "no spy for " spy-var)
                                     {:spies (->> spys# keys (sort-by str))})))]
      (get-and-clear! *atom#)))
 
@@ -205,7 +207,7 @@
 
 
 (defmacro then
-  "Evaluates the provided expressions before continuing."
+  "Evaluates the provided expressions during execution, before continuing to the next test step function."
   {:added "0.5"}
   [& exprs]
   `(fn [context#]
