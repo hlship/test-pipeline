@@ -1,4 +1,4 @@
-# 0.6 -- UNRELEASED
+# 0.6 -- 19 Apr 2023
 
 Added `cleanup`.  Added dependency on [nubank/mockfn](https://github.com/nubank/mockfn) and added
 `providing` and `verifying`.
