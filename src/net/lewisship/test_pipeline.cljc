@@ -163,7 +163,7 @@
   (assert (symbol? spy-var))
   `(let [spys# (get ~context ::spys)
          *atom# (or (get spys# #'~spy-var)
-                    (throw (ex-info ~(str "no spy for " spy-var)
+                    (throw (ex-info (str "no spy for " #'~spy-var)
                                     {:spies (->> spys# keys (sort-by str))})))]
      (get-and-clear! *atom#)))
 
@@ -250,7 +250,6 @@
   `(fn [context#]
      (mfn/providing ~bindings
        (continue context#))))
-
 
 (defmacro verifying
   "Wrapper around mockfn.macros/verifying.  The argument is the bindings vector."
