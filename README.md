@@ -237,7 +237,7 @@ The library itself is quite small; here's the key functions and macros:
 - `cleanup`  expressions execute after pipeline execution completes
 - `providing`, `validating` provide more powerful mocking capabilities, care of [nubank/mockfn](https://github.com/nubank/mockfn)
 
-Please refer to the [API documentation](https://hlship.github.io/docs/test-pipeline) for more details.
+Please refer to the [API documentation](https://cljdoc.org/d/io.github.hlship/test-pipeline) for more details.
 
 ## License
 
