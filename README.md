@@ -2,7 +2,7 @@
 
 [![Clojars Project](https://img.shields.io/clojars/v/io.github.hlship/test-pipeline.svg)](https://clojars.org/io.github.hlship/test-pipeline)
 [![CI](https://github.com/hlship/test-pipeline/actions/workflows/config.yml/badge.svg)](https://github.com/hlship/test-pipeline/actions/workflows/config.yml)
-[![API Documentation](https://img.shields.io/badge/API-Documentation-blue)](https://hlship.github.io/docs/test-pipeline)
+[![cljdoc badge](https://cljdoc.org/badge/io.github.hlship/test-pipeline)](https://cljdoc.org/d/io.github.hlship/test-pipeline)
 
 `test-pipeline` is a small (very small!) library that can be used to improve your Clojure (or ClojureScript) 
 test suite.
