@@ -1,3 +1,9 @@
+# 0.7 -- UNRELEASED
+
+Added `matches?` macro, as wrapper around [nubank/matcher-combinators](https://github.com/nubank/matcher-combinators).
+
+Added `is-context` macro, which exposes the context in an expression that is passed to `clojure.test/is`.
+
 # 0.6 -- 19 Apr 2023
 
 Added `cleanup`.  Added dependency on [nubank/mockfn](https://github.com/nubank/mockfn) and added
