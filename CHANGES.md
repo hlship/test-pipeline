@@ -1,4 +1,4 @@
-# 0.7 -- UNRELEASED
+# 0.7 -- 26 Apr 2024
 
 Added `matches?` macro, as wrapper around [nubank/matcher-combinators](https://github.com/nubank/matcher-combinators).
 
