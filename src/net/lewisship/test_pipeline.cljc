@@ -224,19 +224,19 @@
   ([expr message]
    `(then (clojure.test/is ~expr ~message))))
 
-(defmacro is-context
+(defmacro context-is
   "Variant of [[is]] where a local binding for the context is provided.
 
   Example:
 
-      (is-context context (valid? (:result context)) \"expected valid result\")
+      (context-is context (valid? (:result context)) \"expected valid result\")
 
   The expression and optional message are passed to `clojure.test/is`.
 
   The context is then passed, unchanged, to [[continue]]."
   {:added "0.7"}
   ([context-symbol expr]
-   `(is-context ~context-symbol ~expr nil))
+   `(context-is ~context-symbol ~expr nil))
   ([context-symbol expr message]
    {:pre [(simple-symbol? context-symbol)]}
    `(fn [~context-symbol]
@@ -282,20 +282,19 @@
        (continue context#))))
 
 (defmacro matches?
-  "A wrapper around `(is-context ... (match? ...))` where `match?` is supplied by
+  "A wrapper around `(context-is ... (match? ...))` where `match?` is supplied by
   nubank/matcher-combinators.
 
   Example:
     (p/matches? context {:truth :beauty} (:statement context))
 
   The context is bound to the provided symbol, which is available to use with
-  the pattern (`{:truth :beauty}`) and the expression (`(:statement context)`).
-  The context is then passed, unchanged, to [[continue]]."
+  the pattern (`{:truth :beauty}`) and the expression (`(:statement context)`)."
   {:added "0.7"}
   ([context-symbol pattern expression]
    `(matches? ~context-symbol ~pattern ~expression nil))
   ([context-symbol pattern expression message]
-   `(is-context ~context-symbol
+   `(context-is ~context-symbol
                 (~'match? ~pattern ~expression)
                 ~message)))
 
