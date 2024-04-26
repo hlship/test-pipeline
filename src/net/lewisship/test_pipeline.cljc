@@ -22,6 +22,7 @@
   readable, and to make various kinds of steps more composable."
   (:require [com.walmartlabs.test-reporting :as test-reporting]
             clojure.test
+            matcher-combinators.test
             [mockfn.macros :as mfn]
             [net.lewisship.test-pipeline.internal :refer [get-and-clear!]]
             #?(:clj [clojure.tools.logging.test :refer [with-log]]))
@@ -92,17 +93,17 @@
   [& steps]
   (assert (seq steps))
   (let [*executed (atom false)
-        *halted (atom false)
-        step-fns (->> steps flatten (remove nil?))
+        *halted   (atom false)
+        step-fns  (->> steps flatten (remove nil?))
         ;; Want to add a hook before calling the final step fn to ensure it actually gets
         ;; invoked (that all prior steps called continue).
-        tail-fn (last step-fns)
-        check-fn (fn [context]
-                   (reset! *executed true)
-                   (continue context))
+        tail-fn   (last step-fns)
+        check-fn  (fn [context]
+                    (reset! *executed true)
+                    (continue context))
         step-fns' (concat (butlast step-fns) [check-fn tail-fn])]
-    (continue {::steps step-fns'
-               ::*halted *halted
+    (continue {::steps       step-fns'
+               ::*halted     *halted
                ::halt-checks []})
     (when-not @*halted
       (assert @*executed
@@ -148,7 +149,7 @@
    `(spy ~spy-var ~spy-var))
   ([spy-var mock-fn]
    `(fn [context#]
-      (let [*atom# (atom [])
+      (let [*atom#   (atom [])
             mock-fn# ~mock-fn]
         (with-redefs [~spy-var (fn [& args#]
                                  (swap! *atom# conj args#)
@@ -161,7 +162,7 @@
   Returns a vector of lists of arguments."
   [context spy-var]
   (assert (symbol? spy-var))
-  `(let [spys# (get ~context ::spys)
+  `(let [spys#  (get ~context ::spys)
          *atom# (or (get spys# #'~spy-var)
                     (throw (ex-info (str "no spy for " #'~spy-var)
                                     {:spies (->> spys# keys (sort-by str))})))]
@@ -174,7 +175,7 @@
   (assert (keyword? k))
   `(fn [context#]
      (test-reporting/reporting {'~(-> k name symbol) (get context# ~k)}
-       (continue context#))))
+                               (continue context#))))
 
 (defmacro bind
   "Evaluates to a step function that binds the variable to a value before continuing."
@@ -223,6 +224,25 @@
   ([expr message]
    `(then (clojure.test/is ~expr ~message))))
 
+(defmacro is-context
+  "Variant of [[is]] where a local binding for the context is provided.
+
+  Example:
+
+      (is-context context (valid? (:result context)) \"expected valid result\")
+
+  The expression and optional message are passed to `clojure.test/is`.
+
+  The context is then passed, unchanged, to [[continue]]."
+  {:added "0.7"}
+  ([context-symbol expr]
+   `(is-context ~context-symbol ~expr nil))
+  ([context-symbol expr message]
+   {:pre [(simple-symbol? context-symbol)]}
+   `(fn [~context-symbol]
+      (clojure.test/is ~expr ~message)
+      (continue ~context-symbol))))
+
 (defmacro testing
   "Wrapper around clojure.test/testing."
   {:added "0.5"}
@@ -260,5 +280,23 @@
   `(fn [context#]
      (mfn/verifying ~bindings
        (continue context#))))
+
+(defmacro matches?
+  "A wrapper around `(is-context ... (match? ...))` where `match?` is supplied by
+  nubank/matcher-combinators.
+
+  Example:
+    (p/matches? context {:truth :beauty} (:statement context))
+
+  The context is bound to the provided symbol, which is available to use with
+  the pattern (`{:truth :beauty}`) and the expression (`(:statement context)`).
+  The context is then passed, unchanged, to [[continue]]."
+  {:added "0.7"}
+  ([context-symbol pattern expression]
+   `(matches? ~context-symbol ~pattern ~expression nil))
+  ([context-symbol pattern expression message]
+   `(is-context ~context-symbol
+                (~'match? ~pattern ~expression)
+                ~message)))
 
 

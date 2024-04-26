@@ -233,9 +233,10 @@ The library itself is quite small; here's the key functions and macros:
 - `halt` terminates pipeline execution
 - `halt-on-failure` terminates execution if any test failures occur
 - `then` evaluate expressions during execution
-- `is`, `testing` wrappers around clojure.test
+- `is`, `is-context`, testing` wrappers around clojure.test
 - `cleanup`  expressions execute after pipeline execution completes
 - `providing`, `validating` provide more powerful mocking capabilities, care of [nubank/mockfn](https://github.com/nubank/mockfn)
+- `matches?` which builds on [matcher-combinators](https://github.com/nubank/matcher-combinators)
 
 Please refer to the [API documentation](https://cljdoc.org/d/io.github.hlship/test-pipeline) for more details.
 
